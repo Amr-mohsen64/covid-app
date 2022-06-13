@@ -6,12 +6,12 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
-        <a className="navbar-brand" href="#">
+        <Link className="navbar-brand" to="/">
           <img src={covid} alt={covid} width="70"></img>
           <span className="text-danger">
             Egyption Covid-19 vaccination
           </span>
-        </a>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -26,10 +26,10 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <button className="btn btn-danger me-lg-1 mb-sm-2">login</button>
+              <Link to='/login' className="btn btn-danger me-lg-1 mb-sm-2">login</Link>
             </li>
             <li className="nav-item">
-              <button className="btn btn-primary">signup</button>
+              <Link to='/signup' className="btn btn-primary">signup</Link>
             </li>
           </ul>
         </div>
