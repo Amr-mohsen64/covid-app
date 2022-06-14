@@ -1,20 +1,61 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import useInput from "../hooks/use-input";
+import { useNavigate } from "react-router-dom";
+import { useAlert } from "react-alert";
+
+const isEmail = (value) => value.includes("@");
+const isNotEmpty = (value) => value.trim() !== "";
+
 const Login = () => {
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const { login } = useAuth();
+  const alert = useAlert();
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { login, currentUser } = useAuth();
+
+  const {
+    value: emailValue,
+    isValid: emailIsValid,
+    hasError: emailHasError,
+    valueChangeHandler: emailChangeHandler,
+    InputBlurHandler: emailBLurHandler,
+    reset: restEmail,
+  } = useInput(isEmail);
+
+  const {
+    value: passowrdValue,
+    isValid: passowrdIsValid,
+    hasError: passowrdHasError,
+    valueChangeHandler: passowrdChangeHandler,
+    InputBlurHandler: passowrdBLurHandler,
+    reset: restPassowrd,
+  } = useInput(isNotEmpty);
+
+  let formIsValid = false;
+
+  if (emailIsValid && passowrdIsValid) {
+    formIsValid = true;
+  }
 
   const submitHandler = async (event) => {
     event.preventDefault();
 
     try {
-      await login(emailRef.current.value, passwordRef.current.value).then(
-        () => console.log("succes")
-      );
-    } catch {}
+      await login(emailValue, passowrdValue).then(() => {
+        navigate("/dashboard");
+        alert.show("signed in succesufly!", {
+          type: "success",
+        });
+      });
+    } catch (err) {
+      setError(err.message);
+      alert.show(err.message, {
+        type: "error",
+      });
+    }
   };
+
   return (
     <div className="card" style={{ width: "30rem" }}>
       <div className="card-body">
@@ -26,13 +67,18 @@ const Login = () => {
             </label>
             <input
               type="email"
-              className="form-control"
+              className="form-control invalid"
               id="exampleInputEmail1"
-              ref={emailRef}
+              value={emailValue}
+              onChange={emailChangeHandler}
+              onBlur={emailBLurHandler}
+              autoComplete="off"
             />
-            <div id="emailHelp" className="form-text">
-              We'll never share your email with anyone else.
-            </div>
+            {emailHasError && (
+              <div id="emailHelp" className="form-text fw-bold text-danger">
+                Please enter Valid Email(must inclue @)
+              </div>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="exampleInputPassword1" className="form-label">
@@ -42,15 +88,32 @@ const Login = () => {
               type="password"
               className="form-control"
               id="exampleInputPassword1"
-              ref={passwordRef}
+              autoComplete="off"
+              value={passowrdValue}
+              onChange={passowrdChangeHandler}
+              onBlur={passowrdBLurHandler}
             />
+            {passowrdHasError && (
+              <div id="passwordHelp" className="form-text fw-bold text-danger">
+                Password Cannot be empty
+              </div>
+            )}
           </div>
-          <button type="submit" className="btn btn-primary">
+          {error && (
+            <div id="emailHelp" className="form-text fw-bold text-danger mb-1">
+              {error}
+            </div>
+          )}
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={!formIsValid}
+          >
             Login
           </button>
           <p className="text-primary text-center">
             <Link className="text-primary text-center" to="/signup">
-              already user
+              Don't have account ?
             </Link>
           </p>
         </form>
