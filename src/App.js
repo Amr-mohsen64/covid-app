@@ -14,7 +14,7 @@ function App() {
       <Router>
         <Navbar />
         <div className="container">
-          <div className=" d-flex align-items-center justify-content-center mt-5">
+          <div className="d-flex align-items-center justify-content-center mt-5">
             <Routes>
               <Route
                 path="/"
@@ -24,7 +24,7 @@ function App() {
               <Route
                 path="/login"
                 exact
-                element={!currentUser ? <Login /> : <Navigate to="/"/>}
+                element={!currentUser ? <Login /> : <Navigate to="/" />}
               />
               <Route
                 path="/signup"
