@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { db } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
@@ -7,25 +7,23 @@ export const Dashboard = () => {
   const [src, setSrc] = useState("");
   const [userData, setUserData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [formIsShowen, setFormIsShown] = useState(false);
 
   const { currentUser } = useAuth();
-
-  useEffect(() => {
-    getUserData();
-  }, []);
-
-  QRCode.toDataURL(
-    `
+  const qr = useCallback(() => {
+    QRCode.toDataURL(
+      `
         Email: ${userData.email}
         Name: ${userData.fullName}
         National Id: ${userData.nationalId}
         Gender: ${userData.gender}
       `
-  ).then((data) => {
-    setSrc(data);
-  });
+    ).then((data) => {
+      setSrc(data);
+    });
+  }, [userData.email, userData.fullName, userData.gender, userData.nationalId]);
 
-  function getUserData() {
+  const getUserData = useCallback(() => {
     var docRef = db.collection("users").doc(currentUser.uid);
     setIsLoading(true);
     docRef
@@ -43,6 +41,15 @@ export const Dashboard = () => {
         setIsLoading(false);
         alert(error);
       });
+  }, [currentUser.uid]);
+
+  useEffect(() => {
+    getUserData();
+    qr();
+  }, [getUserData, qr]);
+
+  function handleVacFormApperance() {
+    setFormIsShown((prevState) => !prevState);
   }
 
   return (
@@ -79,6 +86,33 @@ export const Dashboard = () => {
                   {userData.nationalId}
                 </span>
               </li>
+              <li className="list-group-item">
+                <button
+                  className="btn btn-danger"
+                  onClick={handleVacFormApperance}
+                >
+                  Order Vacination
+                </button>
+              </li>
+              {formIsShowen && (
+                <div className="card">
+                  <div className="card-body">
+                    <form>
+                      <div className="mb-3">
+                        <label htmlFor="email" className="form-label">
+                          Email address
+                        </label>
+                        <input
+                          type="email"
+                          className="form-control invalid"
+                          id="email"
+                          autoComplete="off"
+                        />
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             </ul>
           </div>
         </div>
