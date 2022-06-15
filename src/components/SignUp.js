@@ -60,6 +60,15 @@ const SignUp = () => {
     reset: restnationalId,
   } = useInput(isNotEmpty && moreThanSevenChar);
 
+  const {
+    value: birthDateValue,
+    isValid: birthDateIsValid,
+    hasError: birthDateHasError,
+    valueChangeHandler: birthDateChangeHandler,
+    InputBlurHandler: birthDateBLurHandler,
+    reset: restbirthDate,
+  } = useInput(isNotEmpty);
+
   let formIsValid = false;
 
   if (
@@ -67,7 +76,8 @@ const SignUp = () => {
     passowrdIsValid & fullNameIsValid &&
     fullNameIsValid &&
     genderIsValid &&
-    nationalIdIsValid
+    nationalIdIsValid &&
+    birthDateIsValid
   ) {
     formIsValid = true;
   }
@@ -79,9 +89,10 @@ const SignUp = () => {
       fullName: fullNameValue,
       gender: genderValue,
       nationalId: nationalIdValue,
+      birthDate: birthDateValue,
     };
 
-    console.log(userExtraData);
+    // console.log(userExtraData);
     try {
       await signup(emailValue, passowrdValue, userExtraData).then(() => {
         navigate("/login");
@@ -214,6 +225,25 @@ const SignUp = () => {
             {nationalIdHasError && (
               <div className="form-text fw-bold text-danger">
                 enter valid national id (must be equals 14 char)
+              </div>
+            )}
+          </div>
+          <div className="mb-3">
+            <label htmlFor="nationalId" className="form-label">
+              birth Date
+            </label>
+            <input
+              type="date"
+              className="form-control"
+              id=" birthDate"
+              autoComplete="off"
+              value={birthDateValue}
+              onChange={birthDateChangeHandler}
+              onBlur={birthDateBLurHandler}
+            />
+            {birthDateHasError && (
+              <div className="form-text fw-bold text-danger">
+                birthdata must not be empty
               </div>
             )}
           </div>

@@ -18,15 +18,17 @@ export const Dashboard = () => {
         Name: ${userData.fullName}
         National Id: ${userData.nationalId}
         Gender: ${userData.gender}
-        Vacine : ${userData.vacine}
-        First Dose  : ${userData.firstDose}
-        Second Dose  : ${userData.secondDose}
-        Third Dose  : ${userData.thirdDose}
+        Birth Date  : ${userData.birthDate}
+        Vacine : ${userData.vacine || "not provided"}
+        First Dose  : ${userData.firstDose || "not provided"}
+        Second Dose  : ${userData.secondDose || "not provided"}
+        Third Dose  : ${userData.thirdDose || "not provided"}
       `
     ).then((data) => {
       setSrc(data);
     });
   }, [
+    userData.birthDate,
     userData.email,
     userData.firstDose,
     userData.fullName,
@@ -151,22 +153,15 @@ export const Dashboard = () => {
                 </span>
               </li>
               <li className="list-group-item">
+                Birth Date:
+                <span className="d-inline-block ms-2 text-primary">
+                  {userData.birthDate}
+                </span>
+              </li>
+              <li className="list-group-item">
                 Gender :
                 <span className="d-inline-block ms-2 text-primary">
                   {userData.gender}
-                </span>
-              </li>
-              <li className="list-group-item">
-                vacine :
-                <span className="d-inline-block ms-2 text-primary">
-                  {userData.vacine}
-                </span>
-              </li>
-
-              <li className="list-group-item">
-                first Dose :
-                <span className="d-inline-block ms-2 text-primary">
-                  {userData.firstDose}
                 </span>
               </li>
               <li className="list-group-item">
@@ -176,15 +171,29 @@ export const Dashboard = () => {
                 </span>
               </li>
               <li className="list-group-item">
+                vacine :
+                <span className="d-inline-block ms-2 text-primary">
+                  {userData.vacine || "not provided"}
+                </span>
+              </li>
+
+              <li className="list-group-item">
+                first Dose :
+                <span className="d-inline-block ms-2 text-primary">
+                  {userData.firstDose || "not provided"}
+                </span>
+              </li>
+
+              <li className="list-group-item">
                 second Dose:
                 <span className="d-inline-block ms-2 text-primary">
-                  {userData.secondDose}
+                  {userData.secondDose || "not provided"}
                 </span>
               </li>
               <li className="list-group-item">
                 third Dose :
                 <span className="d-inline-block ms-2 text-primary">
-                  {userData.thirdDose}
+                  {userData.thirdDose || "not provided"}
                 </span>
               </li>
               {!userData.isReserved && (
