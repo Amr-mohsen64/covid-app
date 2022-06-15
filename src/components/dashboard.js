@@ -40,21 +40,15 @@ export const Dashboard = () => {
   const getUserData = useCallback(() => {
     var docRef = db.collection("users").doc(currentUser.uid);
     setIsLoading(true);
-    docRef
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          setUserData(doc.data());
-          setIsLoading(false);
-        } else {
-          setUserData({});
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {
+    docRef.onSnapshot((doc) => {
+      if (doc.exists) {
+        setUserData(doc.data());
         setIsLoading(false);
-        alert(error);
-      });
+      } else {
+        setUserData({});
+        setIsLoading(false);
+      }
+    });
   }, [currentUser.uid]);
 
   useEffect(() => {
@@ -203,7 +197,7 @@ export const Dashboard = () => {
                   </button>
                 </li>
               )}
-              {formIsShowen && (
+              {!userData.isReserved && formIsShowen && (
                 <div className="card">
                   <div className="card-body">
                     <h2 className="text-danger">Vacine Info</h2>
