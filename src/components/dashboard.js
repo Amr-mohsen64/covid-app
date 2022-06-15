@@ -5,31 +5,27 @@ import { useAuth } from "../contexts/AuthContext";
 
 export const Dashboard = () => {
   const [src, setSrc] = useState("");
-  const [userData, setUserData] = useState("");
+  const [userData, setUserData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    if (userData != null) {
-      QRCode.toDataURL(
-        `
-          Email: ${userData.email}
-          Name: ${userData.fullName}
-          National Id: ${userData.name}
-          Gender: ${userData.gender}
-        `
-      ).then((data) => {
-        setSrc(data);
-      });
-    }
-  }, []);
-
-  useEffect(() => {
     getUserData();
   }, []);
 
-  async function getUserData() {
+  QRCode.toDataURL(
+    `
+        Email: ${userData.email}
+        Name: ${userData.fullName}
+        National Id: ${userData.nationalId}
+        Gender: ${userData.gender}
+      `
+  ).then((data) => {
+    setSrc(data);
+  });
+
+  function getUserData() {
     var docRef = db.collection("users").doc(currentUser.uid);
     setIsLoading(true);
     docRef
