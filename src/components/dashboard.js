@@ -91,22 +91,53 @@ export const Dashboard = () => {
                   className="btn btn-danger"
                   onClick={handleVacFormApperance}
                 >
-                  Order Vacination
+                  Set Vacination Date
                 </button>
               </li>
               {formIsShowen && (
                 <div className="card">
                   <div className="card-body">
+                  <h2 className="text-danger">Vacine Info</h2>
                     <form>
                       <div className="mb-3">
-                        <label htmlFor="email" className="form-label">
-                          Email address
+                        <label htmlFor="Vaccine" className="form-label">
+                          Vaccine
+                        </label>
+                        <select className="form-select">
+                          <option>Pfizer</option>
+                          <option>Sinopharm </option>
+                          <option>Covaxin</option>
+                        </select>
+                      </div>
+
+                      <div className="mb-3">
+                        <label htmlFor="firstDose" className="form-label">
+                          First Dose
                         </label>
                         <input
-                          type="email"
+                          type="date"
                           className="form-control invalid"
-                          id="email"
-                          autoComplete="off"
+                          id="firstDose"
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label htmlFor="secondDose" className="form-label">
+                          Second Dose
+                        </label>
+                        <input
+                          type="date"
+                          className="form-control invalid"
+                          id="secondDose"
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label htmlFor="thirdDose" className="form-label">
+                          Third Dose
+                        </label>
+                        <input
+                          type="date"
+                          className="form-control invalid"
+                          id="thirdDose"
                         />
                       </div>
                     </form>
