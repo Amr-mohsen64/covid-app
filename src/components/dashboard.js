@@ -77,7 +77,6 @@ export const Dashboard = () => {
   }
 
   const isNotEmpty = (value) => value.trim() !== "";
-  const isSelectNotEmpty = (value) => value != null;
 
   const {
     value: vacineValue,
@@ -85,7 +84,6 @@ export const Dashboard = () => {
     hasError: vacineHasError,
     valueChangeHandler: vacineChangeHandler,
     InputBlurHandler: vacineBLurHandler,
-    reset: restVacine,
   } = useInput(isNotEmpty);
 
   const {
@@ -286,40 +284,6 @@ export const Dashboard = () => {
                           </div>
                         )}
                       </div>
-                      {/* <div className="mb-3">
-                        <label htmlFor="secondDose" className="form-label">
-                          Second Dose
-                        </label>
-                        <input
-                          type="date"
-                          className="form-control invalid"
-                          id="secondDose"
-                          onChange={secondDoseChangeHandler}
-                          onBlur={secondDoseBLurHandler}
-                        />
-                        {secondDoseHasError && (
-                          <div className="form-text fw-bold text-danger">
-                            Please select second Dose Date
-                          </div>
-                        )}
-                      </div>
-                      <div className="mb-3">
-                        <label htmlFor="thirdDose" className="form-label">
-                          Third Dose
-                        </label>
-                        <input
-                          type="date"
-                          className="form-control invalid"
-                          id="thirdDose"
-                          onChange={thirdDoseChangeHandler}
-                          onBlur={thirdDoseBLurHandler}
-                        />
-                        {thirdDoseHasError && (
-                          <div className="form-text fw-bold text-danger">
-                            Please select third Dose Date
-                          </div>
-                        )}
-                      </div> */}
                       <button
                         className="btn btn-primary"
                         disabled={!formIsValid}
