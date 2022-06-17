@@ -49,10 +49,18 @@ const Login = () => {
         });
       });
     } catch (err) {
-      setError(err.message);
-      alert.show(err.message, {
-        type: "error",
-      });
+      // setError(err.message);
+      if (err.code === "auth/user-not-found") {
+        alert.show("user not found", {
+          type: "error",
+        });
+      }
+      if (err.code === "auth/wrong-password") {
+        alert.show("The password entered is wrong", {
+          type: "error",
+        });
+      }
+      // console.log(err.code);
     }
   };
 
@@ -99,11 +107,11 @@ const Login = () => {
               </div>
             )}
           </div>
-          {error && (
+          {/* {error && (
             <div id="emailHelp" className="form-text fw-bold text-danger mb-1">
               {error}
             </div>
-          )}
+          )} */}
           <button
             type="submit"
             className="btn btn-primary"
