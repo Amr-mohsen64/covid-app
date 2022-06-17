@@ -145,7 +145,7 @@ export const Dashboard = () => {
           type: "success",
         });
         console.log(d);
-      });
+      }).catch(err=>console.log(err))
   };
 
   // console.log(userData);

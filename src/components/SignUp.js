@@ -109,6 +109,11 @@ const SignUp = () => {
           type: "error",
         });
       }
+      if (err.code === "auth/network-request-failed") {
+        alert.show("please check your internet connection", {
+          type: "error",
+        });
+      }
     }
   };
 

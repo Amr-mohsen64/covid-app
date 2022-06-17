@@ -50,6 +50,7 @@ const Login = () => {
       });
     } catch (err) {
       // setError(err.message);
+      // console.log(err.code);
       if (err.code === "auth/user-not-found") {
         alert.show("user not found", {
           type: "error",
@@ -57,6 +58,11 @@ const Login = () => {
       }
       if (err.code === "auth/wrong-password") {
         alert.show("The password entered is wrong", {
+          type: "error",
+        });
+      }
+      if (err.code === "auth/network-request-failed") {
+        alert.show("please check your internet connection", {
           type: "error",
         });
       }
