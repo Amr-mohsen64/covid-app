@@ -77,6 +77,7 @@ export const Dashboard = () => {
   }
 
   const isNotEmpty = (value) => value.trim() !== "";
+  const isSelectNotEmpty = (value) => value != null;
 
   const {
     value: vacineValue,
@@ -96,26 +97,8 @@ export const Dashboard = () => {
     reset: restFirstDose,
   } = useInput(isNotEmpty);
 
-  // const {
-  //   value: secondDoseValue,
-  //   isValid: secondDoseIsValid,
-  //   hasError: secondDoseHasError,
-  //   valueChangeHandler: secondDoseChangeHandler,
-  //   InputBlurHandler: secondDoseBLurHandler,
-  //   reset: restSecondDose,
-  // } = useInput(isNotEmpty);
-
-  // const {
-  //   value: thirdDoseValue,
-  //   isValid: thirdDoseIsValid,
-  //   hasError: thirdDoseHasError,
-  //   valueChangeHandler: thirdDoseChangeHandler,
-  //   InputBlurHandler: thirdDoseBLurHandler,
-  //   reset: restThirdDose,
-  // } = useInput(isNotEmpty);
-
   let formIsValid = false;
-  if (firstDoseIsValid) {
+  if (firstDoseIsValid && vacineIsValid) {
     formIsValid = true;
   }
 
@@ -137,6 +120,7 @@ export const Dashboard = () => {
       setSecondDose(secondDoseDate);
       setThirdDose(thirdDoseDate);
     }
+    // console.log(date.toLocaleDateString());
   }, [firstDoseValue]);
 
   useEffect(() => {
@@ -273,6 +257,7 @@ export const Dashboard = () => {
                           onBlur={vacineBLurHandler}
                           value={vacineValue}
                         >
+                          <option value="">-- Select Vaccine --</option>
                           <option>Pfizer</option>
                           <option>Sinopharm </option>
                           <option>Covaxin</option>
