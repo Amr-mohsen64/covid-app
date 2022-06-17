@@ -5,12 +5,16 @@ import { useAuth } from "../contexts/AuthContext";
 import useInput from "../hooks/use-input";
 import isVacinatedImg from "../images/vaccinated.jpeg";
 import isNotVacinatedImg from "../images/notvaccinated.jpeg";
+import { useAlert } from "react-alert";
 
 export const Dashboard = () => {
+  const alert = useAlert();
   const [src, setSrc] = useState("");
   const [userData, setUserData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [formIsShowen, setFormIsShown] = useState(false);
+  const [secondDose, setSecondDose] = useState("");
+  const [thirdDose, setThirdDose] = useState("");
 
   const { currentUser } = useAuth();
   const qr = useCallback(() => {
@@ -92,52 +96,74 @@ export const Dashboard = () => {
     reset: restFirstDose,
   } = useInput(isNotEmpty);
 
-  const {
-    value: secondDoseValue,
-    isValid: secondDoseIsValid,
-    hasError: secondDoseHasError,
-    valueChangeHandler: secondDoseChangeHandler,
-    InputBlurHandler: secondDoseBLurHandler,
-    reset: restSecondDose,
-  } = useInput(isNotEmpty);
+  // const {
+  //   value: secondDoseValue,
+  //   isValid: secondDoseIsValid,
+  //   hasError: secondDoseHasError,
+  //   valueChangeHandler: secondDoseChangeHandler,
+  //   InputBlurHandler: secondDoseBLurHandler,
+  //   reset: restSecondDose,
+  // } = useInput(isNotEmpty);
 
-  const {
-    value: thirdDoseValue,
-    isValid: thirdDoseIsValid,
-    hasError: thirdDoseHasError,
-    valueChangeHandler: thirdDoseChangeHandler,
-    InputBlurHandler: thirdDoseBLurHandler,
-    reset: restThirdDose,
-  } = useInput(isNotEmpty);
+  // const {
+  //   value: thirdDoseValue,
+  //   isValid: thirdDoseIsValid,
+  //   hasError: thirdDoseHasError,
+  //   valueChangeHandler: thirdDoseChangeHandler,
+  //   InputBlurHandler: thirdDoseBLurHandler,
+  //   reset: restThirdDose,
+  // } = useInput(isNotEmpty);
 
   let formIsValid = false;
   if (firstDoseIsValid) {
     formIsValid = true;
   }
 
-  let firstDoseDate = new Date(firstDoseValue);
-  let afterOneMonth = new Date(firstDoseDate.setMonth(firstDoseDate.getMonth() + 1));
+  const calculateDate = useCallback(() => {
+    if (firstDoseValue) {
+      let firstDoseDate = new Date(firstDoseValue);
+      const yyyy = firstDoseDate.getFullYear();
+      let mmSecondDose = firstDoseDate.getMonth() + 2; // Months start at 0!
+      let mmThirdDose = firstDoseDate.getMonth() + 3; // Months start at 0!
+      let dd = firstDoseDate.getDate();
 
-  console.log(firstDoseDate);
-  console.log(afterOneMonth);
-  // console.log(date.toLocaleDateString());
+      if (dd < 10) dd = "0" + dd;
+      if (mmSecondDose < 10) mmSecondDose = "0" + mmSecondDose;
+      if (mmThirdDose < 10) mmThirdDose = "0" + mmThirdDose;
+
+      const secondDoseDate = yyyy + "-" + mmSecondDose + "-" + dd;
+      const thirdDoseDate = yyyy + "-" + mmThirdDose + "-" + dd;
+
+      setSecondDose(secondDoseDate);
+      setThirdDose(thirdDoseDate);
+    }
+  }, [firstDoseValue]);
+
+  useEffect(() => {
+    calculateDate();
+  }, [calculateDate]);
+
   const submitHandler = async (event) => {
     event.preventDefault();
-    console.log(vacineValue, firstDoseValue, secondDoseValue, thirdDoseValue);
 
     db.collection("users")
       .doc(currentUser.uid)
       .set(
         {
           vacine: vacineValue,
-          firstDose: firstDoseValue,
-          secondDose: secondDoseValue,
-          thirdDose: thirdDoseValue,
           isReserved: true,
+          firstDose: firstDoseValue,
+          secondDose,
+          thirdDose,
         },
         { merge: true }
       )
-      .then((d) => console.log(d));
+      .then((d) => {
+        alert.show("Vaccine First dose setted succesfully !", {
+          type: "success",
+        });
+        console.log(d);
+      });
   };
 
   // console.log(userData);
@@ -185,7 +211,7 @@ export const Dashboard = () => {
               {userData.isReserved && (
                 <>
                   <li className="list-group-item">
-                    Vacine :
+                    Vaccine :
                     <span className="d-inline-block ms-2 text-primary">
                       {userData.vacine || "not provided"}
                     </span>
@@ -245,6 +271,7 @@ export const Dashboard = () => {
                           className="form-select"
                           onChange={vacineChangeHandler}
                           onBlur={vacineBLurHandler}
+                          value={vacineValue}
                         >
                           <option>Pfizer</option>
                           <option>Sinopharm </option>

@@ -8,6 +8,7 @@ import { useAlert } from "react-alert";
 const isEmail = (value) => value.includes("@");
 const isNotEmpty = (value) => value.trim() !== "";
 const moreThanSevenChar = (value) => value.length === 14;
+const passwordMoreThanorEqualSix = (value) => value.length >= 6;
 
 const SignUp = () => {
   const alert = useAlert();
@@ -31,7 +32,7 @@ const SignUp = () => {
     valueChangeHandler: passowrdChangeHandler,
     InputBlurHandler: passowrdBLurHandler,
     reset: restPassowrd,
-  } = useInput(isNotEmpty);
+  } = useInput(passwordMoreThanorEqualSix);
 
   const {
     value: fullNameValue,
@@ -103,16 +104,18 @@ const SignUp = () => {
       });
     } catch (err) {
       setError(err.message);
-      alert.show(err.message, {
-        type: "error",
-      });
+      if (err.code === "auth/email-already-in-use") {
+        alert.show("email already exist", {
+          type: "error",
+        });
+      }
     }
   };
 
   return (
     <div className="card" style={{ width: "30rem" }}>
       <div className="card-body">
-        <h2 className="text-center mb-4 text-danger">Sign Up</h2>
+        <h2 className="text-center mb-4 text-danger">Register </h2>
         <form onSubmit={submitHandler}>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
@@ -148,13 +151,13 @@ const SignUp = () => {
             />
             {passowrdHasError && (
               <div id="passwordHelp" className="form-text fw-bold text-danger">
-                Password Cannot be empty
+                Password must be more than six chars
               </div>
             )}
           </div>
           <div className="mb-3">
             <label htmlFor="fullName" className="form-label">
-              FullName
+              Full Name
             </label>
             <input
               type="text"
@@ -167,7 +170,7 @@ const SignUp = () => {
             />
             {fullNameHasError && (
               <div id="passwordHelp" className="form-text fw-bold text-danger">
-                full Name Cannot be empty
+                Full Name Cannot be empty
               </div>
             )}
           </div>
@@ -185,11 +188,6 @@ const SignUp = () => {
             <label htmlFor="male" className="form-label ms-2">
               Male
             </label>
-            {genderHasError && (
-              <div id="passwordHelp" className="form-text fw-bold text-danger">
-                full Name Cannot be empty
-              </div>
-            )}
           </div>
           <div className="mb-3">
             <input
@@ -206,13 +204,13 @@ const SignUp = () => {
             </label>
             {genderHasError && (
               <div id="passwordHelp" className="form-text fw-bold text-danger">
-                full Name Cannot be empty
+                Please select gender
               </div>
             )}
           </div>
           <div className="mb-3">
             <label htmlFor="nationalId" className="form-label">
-              nationalId
+              National Id
             </label>
             <input
               type="text"
@@ -225,13 +223,13 @@ const SignUp = () => {
             />
             {nationalIdHasError && (
               <div className="form-text fw-bold text-danger">
-                enter valid national id (must be equals 14 char)
+                Enter valid national id (Must be 14 characters)
               </div>
             )}
           </div>
           <div className="mb-3">
             <label htmlFor="nationalId" className="form-label">
-              birth Date
+              Date of Birth
             </label>
             <input
               type="date"
@@ -244,20 +242,20 @@ const SignUp = () => {
             />
             {birthDateHasError && (
               <div className="form-text fw-bold text-danger">
-                birthdata must not be empty
+                birth date must not be empty
               </div>
             )}
           </div>
 
-          {error && (
+          {/* {error && (
             <div className="form-text fw-bold text-danger mb-1">{error}</div>
-          )}
+          )} */}
           <button
             type="submit"
             className="btn btn-primary"
             disabled={!formIsValid}
           >
-            Sign Up
+            Register
           </button>
           <p className="text-primary text-center">
             <Link className="text-primary text-center" to="/login">
