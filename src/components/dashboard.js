@@ -256,6 +256,8 @@ export const Dashboard = () => {
                           value={vacineValue}
                         >
                           <option value="">-- Select Vaccine --</option>
+                          <option>Johnson</option>
+                          <option>Astrazinca</option>
                           <option>Pfizer</option>
                           <option>Sinopharm </option>
                           <option>Covaxin</option>

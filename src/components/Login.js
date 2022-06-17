@@ -127,7 +127,7 @@ const Login = () => {
           </button>
           <p className="text-primary text-center">
             <Link className="text-primary text-center" to="/signup">
-              Don't have account ?
+              Register
             </Link>
           </p>
         </form>
