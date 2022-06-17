@@ -90,6 +90,7 @@ const SignUp = () => {
       gender: genderValue,
       nationalId: nationalIdValue,
       birthDate: birthDateValue,
+      isVaccinated: false,
     };
 
     // console.log(userExtraData);

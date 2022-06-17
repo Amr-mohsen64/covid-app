@@ -3,6 +3,8 @@ import QRCode from "qrcode";
 import { db } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
 import useInput from "../hooks/use-input";
+import isVacinatedImg from "../images/vaccinated.jpeg";
+import isNotVacinatedImg from "../images/notvaccinated.jpeg";
 
 export const Dashboard = () => {
   const [src, setSrc] = useState("");
@@ -14,15 +16,22 @@ export const Dashboard = () => {
   const qr = useCallback(() => {
     QRCode.toDataURL(
       `
-        Email: ${userData.email}
-        Name: ${userData.fullName}
-        National Id: ${userData.nationalId}
-        Gender: ${userData.gender}
-        Birth Date  : ${userData.birthDate}
-        Vacine : ${userData.vacine || "not provided"}
-        First Dose  : ${userData.firstDose || "not provided"}
-        Second Dose  : ${userData.secondDose || "not provided"}
-        Third Dose  : ${userData.thirdDose || "not provided"}
+        ${
+          userData.isVaccinated
+            ? `
+        - Vacinated: ${userData.isVaccinated ? "Yes" : "No"}
+        - Email: ${userData.email}
+        - Name: ${userData.fullName}
+        - National Id: ${userData.nationalId}
+        - Gender: ${userData.gender}
+        - Birth Date  : ${userData.birthDate}
+        - Vacine : ${userData.vacine || "not provided"}
+        - First Dose  : ${userData.firstDose || "not provided"}
+        - Second Dose  : ${userData.secondDose || "not provided"}
+        - Third Dose  : ${userData.thirdDose || "not provided"}`
+            : `Not Valid (Not Vaccinated)`
+        }
+  
       `
     ).then((data) => {
       setSrc(data);
@@ -33,6 +42,7 @@ export const Dashboard = () => {
     userData.firstDose,
     userData.fullName,
     userData.gender,
+    userData.isVaccinated,
     userData.nationalId,
     userData.secondDose,
     userData.thirdDose,
@@ -101,15 +111,16 @@ export const Dashboard = () => {
   } = useInput(isNotEmpty);
 
   let formIsValid = false;
-  if (
-    vacineIsValid &&
-    firstDoseIsValid &&
-    secondDoseIsValid &&
-    thirdDoseIsValid
-  ) {
+  if (firstDoseIsValid) {
     formIsValid = true;
   }
 
+  let firstDoseDate = new Date(firstDoseValue);
+  let afterOneMonth = new Date(firstDoseDate.setMonth(firstDoseDate.getMonth() + 1));
+
+  console.log(firstDoseDate);
+  console.log(afterOneMonth);
+  // console.log(date.toLocaleDateString());
   const submitHandler = async (event) => {
     event.preventDefault();
     console.log(vacineValue, firstDoseValue, secondDoseValue, thirdDoseValue);
@@ -165,38 +176,53 @@ export const Dashboard = () => {
                 </span>
               </li>
               <li className="list-group-item">
-                nationa lId :
+                National Id :
                 <span className="d-inline-block ms-2 text-primary">
                   {userData.nationalId}
                 </span>
               </li>
-              <li className="list-group-item">
-                vacine :
-                <span className="d-inline-block ms-2 text-primary">
-                  {userData.vacine || "not provided"}
-                </span>
-              </li>
 
-              <li className="list-group-item">
-                first Dose :
-                <span className="d-inline-block ms-2 text-primary">
-                  {userData.firstDose || "not provided"}
-                </span>
-              </li>
+              {userData.isReserved && (
+                <>
+                  <li className="list-group-item">
+                    Vacine :
+                    <span className="d-inline-block ms-2 text-primary">
+                      {userData.vacine || "not provided"}
+                    </span>
+                  </li>
 
-              <li className="list-group-item">
-                second Dose:
-                <span className="d-inline-block ms-2 text-primary">
-                  {userData.secondDose || "not provided"}
-                </span>
-              </li>
-              <li className="list-group-item">
-                third Dose :
-                <span className="d-inline-block ms-2 text-primary">
-                  {userData.thirdDose || "not provided"}
-                </span>
-              </li>
-              {!userData.isReserved && (
+                  <li className="list-group-item">
+                    First Dose :
+                    <span className="d-inline-block ms-2 text-primary">
+                      {userData.firstDose || "not provided"}
+                    </span>
+                  </li>
+
+                  <li className="list-group-item">
+                    Second Dose:
+                    <span className="d-inline-block ms-2 text-primary">
+                      {userData.secondDose || "not provided"}
+                    </span>
+                  </li>
+                  <li className="list-group-item">
+                    Third Dose :
+                    <span className="d-inline-block ms-2 text-primary">
+                      {userData.thirdDose || "not provided"}
+                    </span>
+                  </li>
+                </>
+              )}
+              {userData.isVaccinated && (
+                <li className="list-group-item">
+                  <img src={isVacinatedImg} alt={isVacinatedImg} />
+                </li>
+              )}
+              {!userData.isVaccinated && (
+                <li className="list-group-item">
+                  <img src={isNotVacinatedImg} alt={isNotVacinatedImg} />
+                </li>
+              )}
+              {!userData.isReserved && !userData.isVaccinated && (
                 <li className="list-group-item">
                   <button
                     className="btn btn-danger"
@@ -248,7 +274,7 @@ export const Dashboard = () => {
                           </div>
                         )}
                       </div>
-                      <div className="mb-3">
+                      {/* <div className="mb-3">
                         <label htmlFor="secondDose" className="form-label">
                           Second Dose
                         </label>
@@ -281,7 +307,7 @@ export const Dashboard = () => {
                             Please select third Dose Date
                           </div>
                         )}
-                      </div>
+                      </div> */}
                       <button
                         className="btn btn-primary"
                         disabled={!formIsValid}
